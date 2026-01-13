@@ -1,2 +1,2 @@
-#define SECRET_SSID "babis"
-#define SECRET_PASS "babishome!"
+#define SECRET_SSID "WiFi_Name"
+#define SECRET_PASS "WiFi_Password"
