@@ -1,2 +1,2 @@
-#define SECRET_SSID "YourWiFiName"
-#define SECRET_PASS "YourWiFiPassword"
+#define SECRET_SSID "babismobile"
+#define SECRET_PASS "12345678"

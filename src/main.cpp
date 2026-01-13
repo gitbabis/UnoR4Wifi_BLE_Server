@@ -13,9 +13,10 @@
 char ssid[] = SECRET_SSID;
 char pass[] = SECRET_PASS;
 
-int ledPin = LED_BUILTIN;
+int ledPin = 4;
 int status = WL_IDLE_STATUS;
 bool currentLedState = false;
+volatile bool displayNeedsUpdate = false;
 
 // --- Helper ---
 void setLedState(bool on);
@@ -78,7 +79,8 @@ void setLedState(bool on) {
       switchCharacteristic.writeValue(on ? 1 : 0);
       Serial.print("State Changed to: ");
       Serial.println(on ? "ON" : "OFF");
-      updateDisplay(on);
+      Serial.println(on ? "ON" : "OFF");
+      displayNeedsUpdate = true;
   }
 }
 
@@ -99,6 +101,12 @@ void loop() {
 
   // --- PART 2: Handle WiFi (Always runs) ---
   handleWiFiClients();
+  
+  // --- PART 3: Handle Display Updates (Deferred) ---
+  if (displayNeedsUpdate) {
+      updateDisplay(currentLedState);
+      displayNeedsUpdate = false;
+  }
 }
 
 void handleWiFiClients() {
@@ -132,7 +140,7 @@ void handleWiFiClients() {
               
               // Serve HTML parts and inject state
               client.print(html_head);
-              if (digitalRead(ledPin) == HIGH) client.print(" checked");
+              if (currentLedState) client.print(" checked");
               client.print(html_tail);
             }
             // If it was an API call (GET /led/on or off) we typically don't return content, 
